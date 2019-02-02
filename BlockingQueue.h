@@ -38,7 +38,9 @@ public:
         while(deque_.empty()){ // 使用while是为了防止虚假唤醒
             pthread_cond_wait(&cond_, &mutex_);
         }
+
         assert(deque_.empty()== false);
+
         T ret = deque_.front();
         deque_.pop_front();
         pthread_mutex_unlock(&mutex_);
