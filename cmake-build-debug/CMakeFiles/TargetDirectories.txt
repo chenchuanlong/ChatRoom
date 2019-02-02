@@ -1,0 +1,4 @@
+/home/curtis/CLionProjects/chat-room/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/curtis/CLionProjects/chat-room/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/curtis/CLionProjects/chat-room/cmake-build-debug/CMakeFiles/server.dir
+/home/curtis/CLionProjects/chat-room/cmake-build-debug/CMakeFiles/client.dir

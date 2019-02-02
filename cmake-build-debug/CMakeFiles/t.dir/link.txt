@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/t.dir/tmain.cpp.o  -o t 

@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/chat_room.dir/main.cpp.o CMakeFiles/chat_room.dir/main2.cpp.o  -o chat_room 
