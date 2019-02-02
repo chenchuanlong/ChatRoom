@@ -14,6 +14,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeCInformation.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeCXXInformation.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeCommonLanguageInclude.cmake"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeConfigurableFile.in"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeFindCodeBlocks.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeGenericSystem.cmake"
@@ -21,10 +22,18 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeLanguageInformation.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeSystemSpecificInformation.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CMakeSystemSpecificInitialize.cmake"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CheckFunctionExists.c"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CheckIncludeFile.c.in"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CheckIncludeFile.cmake"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CheckLibraryExists.cmake"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/CheckSymbolExists.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/Compiler/GNU-C.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/Compiler/GNU-CXX.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/Compiler/GNU.cmake"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/FindPackageHandleStandardArgs.cmake"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/FindPackageMessage.cmake"
+  "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/FindThreads.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/Platform/Linux-GNU-C.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/Platform/Linux-GNU-CXX.cmake"
   "/home/curtis/clion-2018.3.3/bin/cmake/linux/share/cmake-3.13/Modules/Platform/Linux-GNU.cmake"
@@ -47,5 +56,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/server.dir/DependInfo.cmake"
+  "CMakeFiles/testBQ.dir/DependInfo.cmake"
   "CMakeFiles/client.dir/DependInfo.cmake"
   )

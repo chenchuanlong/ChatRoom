@@ -102,6 +102,43 @@ clean: CMakeFiles/server.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/testBQ.dir
+
+# All Build rule for target.
+CMakeFiles/testBQ.dir/all:
+	$(MAKE) -f CMakeFiles/testBQ.dir/build.make CMakeFiles/testBQ.dir/depend
+	$(MAKE) -f CMakeFiles/testBQ.dir/build.make CMakeFiles/testBQ.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/curtis/CLionProjects/chat-room/cmake-build-debug/CMakeFiles --progress-num=7,8 "Built target testBQ"
+.PHONY : CMakeFiles/testBQ.dir/all
+
+# Include target in all.
+all: CMakeFiles/testBQ.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/testBQ.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/curtis/CLionProjects/chat-room/cmake-build-debug/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testBQ.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/curtis/CLionProjects/chat-room/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/testBQ.dir/rule
+
+# Convenience name for target.
+testBQ: CMakeFiles/testBQ.dir/rule
+
+.PHONY : testBQ
+
+# clean rule for target.
+CMakeFiles/testBQ.dir/clean:
+	$(MAKE) -f CMakeFiles/testBQ.dir/build.make CMakeFiles/testBQ.dir/clean
+.PHONY : CMakeFiles/testBQ.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/testBQ.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/client.dir
 
 # All Build rule for target.

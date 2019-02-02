@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/curtis/CLionProjects/chat-room/BlockingQueue.h
+deque
+-
+pthread.h
+-
+assert.h
+-
+
+/home/curtis/CLionProjects/chat-room/TestBlockingQueue.cpp
+stdio.h
+-
+iostream
+-
+stdlib.h
+-
+math.h
+-
+pthread.h
+-
+sys/syscall.h
+-
+unistd.h
+-
+BlockingQueue.h
+/home/curtis/CLionProjects/chat-room/BlockingQueue.h
+

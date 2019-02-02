@@ -83,6 +83,52 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="testBQ">
+				<Option output="/home/curtis/CLionProjects/chat-room/cmake-build-debug/testBQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/curtis/CLionProjects/chat-room/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 testBQ"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="testBQ/fast">
+				<Option output="/home/curtis/CLionProjects/chat-room/cmake-build-debug/testBQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/curtis/CLionProjects/chat-room/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 testBQ/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/curtis/CLionProjects/chat-room/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="client">
 				<Option output="/home/curtis/CLionProjects/chat-room/cmake-build-debug/client" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/curtis/CLionProjects/chat-room/cmake-build-debug"/>
@@ -130,6 +176,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/curtis/CLionProjects/chat-room/BlockingQueue.h">
+			<Option target="testBQ"/>
+		</Unit>
 		<Unit filename="/home/curtis/CLionProjects/chat-room/Client.cpp">
 			<Option target="client"/>
 		</Unit>
@@ -151,6 +200,9 @@
 		</Unit>
 		<Unit filename="/home/curtis/CLionProjects/chat-room/ServerMain.cpp">
 			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/curtis/CLionProjects/chat-room/TestBlockingQueue.cpp">
+			<Option target="testBQ"/>
 		</Unit>
 		<Unit filename="/home/curtis/CLionProjects/chat-room/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

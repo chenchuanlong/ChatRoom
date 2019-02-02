@@ -124,6 +124,19 @@ server/fast:
 .PHONY : server/fast
 
 #=============================================================================
+# Target rules for targets named testBQ
+
+# Build rule for target.
+testBQ: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testBQ
+.PHONY : testBQ
+
+# fast build rule for target.
+testBQ/fast:
+	$(MAKE) -f CMakeFiles/testBQ.dir/build.make CMakeFiles/testBQ.dir/build
+.PHONY : testBQ/fast
+
+#=============================================================================
 # Target rules for targets named client
 
 # Build rule for target.
@@ -244,6 +257,33 @@ ServerMain.cpp.s:
 	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/ServerMain.cpp.s
 .PHONY : ServerMain.cpp.s
 
+TestBlockingQueue.o: TestBlockingQueue.cpp.o
+
+.PHONY : TestBlockingQueue.o
+
+# target to build an object file
+TestBlockingQueue.cpp.o:
+	$(MAKE) -f CMakeFiles/testBQ.dir/build.make CMakeFiles/testBQ.dir/TestBlockingQueue.cpp.o
+.PHONY : TestBlockingQueue.cpp.o
+
+TestBlockingQueue.i: TestBlockingQueue.cpp.i
+
+.PHONY : TestBlockingQueue.i
+
+# target to preprocess a source file
+TestBlockingQueue.cpp.i:
+	$(MAKE) -f CMakeFiles/testBQ.dir/build.make CMakeFiles/testBQ.dir/TestBlockingQueue.cpp.i
+.PHONY : TestBlockingQueue.cpp.i
+
+TestBlockingQueue.s: TestBlockingQueue.cpp.s
+
+.PHONY : TestBlockingQueue.s
+
+# target to generate assembly for a file
+TestBlockingQueue.cpp.s:
+	$(MAKE) -f CMakeFiles/testBQ.dir/build.make CMakeFiles/testBQ.dir/TestBlockingQueue.cpp.s
+.PHONY : TestBlockingQueue.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -253,6 +293,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... server"
+	@echo "... testBQ"
 	@echo "... client"
 	@echo "... Client.o"
 	@echo "... Client.i"
@@ -266,6 +307,9 @@ help:
 	@echo "... ServerMain.o"
 	@echo "... ServerMain.i"
 	@echo "... ServerMain.s"
+	@echo "... TestBlockingQueue.o"
+	@echo "... TestBlockingQueue.i"
+	@echo "... TestBlockingQueue.s"
 .PHONY : help
 
 

@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/testBQ.dir/TestBlockingQueue.cpp.o  -o testBQ -lpthread 
