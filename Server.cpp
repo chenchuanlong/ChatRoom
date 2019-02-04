@@ -12,6 +12,11 @@ Server::Server() {
 
     listener = 0;
     epfd = 0;
+    pthread_rwlock_init(&rwlock_, NULL);
+}
+
+Server::~Server() {
+    pthread_rwlock_destroy(&rwlock_);
 }
 
 void Server::Init() {
@@ -60,6 +65,7 @@ int Server::SendBroadcastMessage(int clientfd) {
     int len = recv(clientfd, buf, BUF_SIZE, 0);
 
     if(len == 0){
+        pthread_rwlock_wrlock(&rwlock_);
         close(clientfd);
         clients_list.remove(clientfd);
         cout << "ClientID = " << clientfd
@@ -67,6 +73,7 @@ int Server::SendBroadcastMessage(int clientfd) {
              << clients_list.size()
              << " client in the chat room"
              << endl;
+        pthread_rwlock_unlock(&rwlock_);
     }else{
         if(clients_list.size()==1){
             send(clientfd, CAUTION, strlen(CAUTION), 0);
@@ -74,6 +81,8 @@ int Server::SendBroadcastMessage(int clientfd) {
         }
 
         sprintf(message, SERVER_MESSAGE, clientfd, buf);
+        messageQueue.put(message);
+        /*
         list<int>::iterator it;
         for(it = clients_list.begin(); it != clients_list.end(); ++it){
             if(*it != clientfd){
@@ -82,16 +91,59 @@ int Server::SendBroadcastMessage(int clientfd) {
                 }
             }
         }
+        */
 
     }
     return len;
 }
+
+
+void *  Server::BroadcastMessage(void *arg) {
+
+    //类成员函数不能作为pthread_create函数参数，所以通过传入this指针给static函数解决问题
+    Server * pServer = (Server *) arg;
+    assert(pServer != NULL);
+
+    while(true){
+
+        string message = pServer->messageQueue.take();
+        const char * message_cstr = message.c_str();
+
+        printf("consumer-tid:%ld is broadcasting:%s\n",(long int) gettid(), message_cstr);
+
+        pthread_rwlock_rdlock(& (pServer->rwlock_) );
+        list<int>::iterator it;
+        for(it = pServer->clients_list.begin(); it != pServer->clients_list.end(); ++it){
+            if( send(*it, message_cstr, BUF_SIZE, 0) < 0){
+                continue;
+            }
+        }
+        pthread_rwlock_unlock(& (pServer->rwlock_) );
+
+    }
+}
+
+void Server::CreateBrocastThreads(int threadNum){
+    pthread_t pthreads[threadNum];
+    for(int i=0; i<threadNum; ++i){
+        pthread_create(&pthreads[i], NULL, BroadcastMessage, (void *)this);
+    }
+/*
+    for (int i = 0; i < threadNum; ++i) {
+        pthread_join(pthreads[i], NULL);
+    }
+*/
+}
+
 
 void Server::Start() {
     static struct epoll_event events[EPOLL_SIZE];
 
     Init();
 
+    //Create consumer threads
+     CreateBrocastThreads(3);
+     
     while (true){
 
         int epoll_events_count = epoll_wait(epfd, events, EPOLL_SIZE, -1);
@@ -117,10 +169,12 @@ void Server::Start() {
                      << ntohs(client_address.sin_port) << ", clientfd = "
                      << clientfd << endl;
 
+                pthread_rwlock_wrlock(&rwlock_);
                 addfd(epfd, clientfd, true);
                 clients_list.push_back(clientfd);
                 cout << "Add new clientfd =  " << clientfd << " to poll" << endl;
                 cout << "There are " << clients_list.size() << " clients in the chat room" << endl;
+                pthread_rwlock_unlock(&rwlock_);
 
                 cout << "welcome message" << endl;
                 char message[BUF_SIZE];
@@ -143,14 +197,7 @@ void Server::Start() {
 
             }
 
-
-
-
         }
-
-
-
-
 
     }
 

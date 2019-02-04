@@ -19,9 +19,9 @@ void * producer(void * arg){
     srand(time(NULL));
     while(1){
         int randNum = rand()%100;
-        printf("tid:%ld produce:%d ; queue left:%ld \n", (long int) gettid(), randNum, (long int)bq.size());
+        printf("tid:%ld produce:%d ; queue left:%ld \n", (long int)gettid(), randNum, (long int)bq.size());
         bq.put(randNum);
-        sleep(1);
+        sleep(4);
     }
 }
 
@@ -33,15 +33,23 @@ void * consumer(void * arg){
     }
 }
 
-int main()
-{
-    pthread_t pthread_a, pthread_b;
+void testMultyThread(){
+    pthread_t pthread_a, pthread_b,pthread_c;
     printf("hello\n");
 
+    pthread_create(&pthread_a, NULL, producer, NULL);
     pthread_create(&pthread_b, NULL, producer, NULL);
-    pthread_create(&pthread_a, NULL, consumer, NULL);
+    pthread_create(&pthread_c, NULL, consumer, NULL);
     pthread_join(pthread_a, NULL);
     pthread_join(pthread_b, NULL);
+    pthread_join(pthread_c, NULL);
+}
+
+int main()
+{
+
+    testMultyThread();
+
 
     return 0;
 }

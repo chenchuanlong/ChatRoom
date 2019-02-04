@@ -8,3 +8,4 @@ add_executable(testBQ TestBlockingQueue.cpp BlockingQueue.h )
 
 find_package(Threads REQUIRED)
 target_link_libraries(testBQ Threads::Threads)
+target_link_libraries(server Threads::Threads)

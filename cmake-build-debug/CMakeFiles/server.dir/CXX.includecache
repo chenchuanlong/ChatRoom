@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+/home/curtis/CLionProjects/chat-room/BlockingQueue.h
+deque
+-
+pthread.h
+-
+assert.h
+-
+
 /home/curtis/CLionProjects/chat-room/Common.h
 iostream
 -
@@ -43,10 +51,14 @@ Server.h
 /home/curtis/CLionProjects/chat-room/Server.h
 string
 -
+sys/syscall.h
+-
+pthread.h
+-
+unistd.h
+-
 Common.h
 /home/curtis/CLionProjects/chat-room/Common.h
-
-/home/curtis/CLionProjects/chat-room/ServerMain.cpp
-Server.h
-/home/curtis/CLionProjects/chat-room/Server.h
+BlockingQueue.h
+/home/curtis/CLionProjects/chat-room/BlockingQueue.h
 
