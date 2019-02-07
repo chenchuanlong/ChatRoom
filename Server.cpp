@@ -56,7 +56,7 @@ void Server::Close() {
     close(epfd);
 }
 
-int Server::SendBroadcastMessage(int clientfd) {
+int Server::recvMessage(int clientfd) {
     char buf[BUF_SIZE], message[BUF_SIZE];
     bzero(buf, BUF_SIZE);
     bzero(message, BUF_SIZE);
@@ -64,6 +64,7 @@ int Server::SendBroadcastMessage(int clientfd) {
     cout << "read from client(clientID = " << clientfd << ")" << endl;
     int len = recv(clientfd, buf, BUF_SIZE, 0);
 
+    //移除连接
     if(len == 0){
         pthread_rwlock_wrlock(&rwlock_);
         close(clientfd);
@@ -74,6 +75,16 @@ int Server::SendBroadcastMessage(int clientfd) {
              << " client in the chat room"
              << endl;
         pthread_rwlock_unlock(&rwlock_);
+
+
+        sprintf(message, CLIENT_LEAVE, clientfd);
+
+        message_t message_recv;
+        message_recv.sender = clientfd;
+        message_recv.receiver = 0;
+        message_recv.message = message;
+        messageQueue.put(message_recv);
+
     }else{
         if(clients_list.size()==1){
             send(clientfd, CAUTION, strlen(CAUTION), 0);
@@ -81,7 +92,14 @@ int Server::SendBroadcastMessage(int clientfd) {
         }
 
         sprintf(message, SERVER_MESSAGE, clientfd, buf);
-        messageQueue.put(message);
+
+        message_t message_recv;
+        message_recv.sender = clientfd;
+        message_recv.receiver = 0;
+        message_recv.message = message;
+
+        messageQueue.put(message_recv);
+
         /*
         list<int>::iterator it;
         for(it = clients_list.begin(); it != clients_list.end(); ++it){
@@ -92,13 +110,12 @@ int Server::SendBroadcastMessage(int clientfd) {
             }
         }
         */
-
     }
     return len;
 }
 
 
-void *  Server::BroadcastMessage(void *arg) {
+void * Server::BroadcastMessage(void *arg) {
 
     //类成员函数不能作为pthread_create函数参数，所以通过传入this指针给static函数解决问题
     Server * pServer = (Server *) arg;
@@ -106,14 +123,17 @@ void *  Server::BroadcastMessage(void *arg) {
 
     while(true){
 
-        string message = pServer->messageQueue.take();
-        const char * message_cstr = message.c_str();
+        message_t message_toSend = pServer->messageQueue.take();
 
+        string message = message_toSend.message;
+        const char * message_cstr = message.c_str();
         printf("consumer-tid:%ld is broadcasting:%s\n",(long int) gettid(), message_cstr);
 
         pthread_rwlock_rdlock(& (pServer->rwlock_) );
         list<int>::iterator it;
         for(it = pServer->clients_list.begin(); it != pServer->clients_list.end(); ++it){
+            if(*it == message_toSend.sender) continue;   //发送者是自己
+
             if( send(*it, message_cstr, BUF_SIZE, 0) < 0){
                 continue;
             }
@@ -143,7 +163,7 @@ void Server::Start() {
 
     //Create consumer threads
      CreateBrocastThreads(3);
-     
+
     while (true){
 
         int epoll_events_count = epoll_wait(epfd, events, EPOLL_SIZE, -1);
@@ -188,7 +208,7 @@ void Server::Start() {
                 }
             }
             else{
-                int ret = SendBroadcastMessage(sockfd);
+                int ret = recvMessage(sockfd);
                 if(ret < 0){
                     perror("Broadcast error");
                     Close();

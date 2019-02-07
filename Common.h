@@ -23,10 +23,17 @@
 #define SERVER_PORT 8888
 #define EPOLL_SIZE 500
 #define BUF_SIZE 0xFFFF
-#define SERVER_WELCOME "Welcome to join the chat room! Your chat ID is: Client #%d"
-#define SERVER_MESSAGE "ClientID %d say >> %s"
+#define SERVER_WELCOME "SYSTEM MESSAGE: Welcome to join the chat room! Your chat ID is: Client #%d"
+#define SERVER_MESSAGE "[Client#%d] say >> %s"
 #define EXIT "EXIT"
-#define CAUTION "There is only one in the chat room!"
+#define CAUTION "SYSTEM MESSAGE: There is only one in the chat room!"
+#define  CLIENT_LEAVE "SYSTEM MESSAGE: [Client#%d] leave the chat room"
+
+struct message_t{
+    int sender;
+    int receiver;     //  0 代表广播, 其他代表私聊
+    std::string message;
+};
 
 static void addfd(int epollfd, int fd, bool enable_et)
 {

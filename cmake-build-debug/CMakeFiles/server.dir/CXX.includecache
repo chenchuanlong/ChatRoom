@@ -62,3 +62,7 @@ Common.h
 BlockingQueue.h
 /home/curtis/CLionProjects/chat-room/BlockingQueue.h
 
+/home/curtis/CLionProjects/chat-room/ServerMain.cpp
+Server.h
+/home/curtis/CLionProjects/chat-room/Server.h
+

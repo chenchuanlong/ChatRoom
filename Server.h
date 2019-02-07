@@ -29,13 +29,13 @@ public:
     void CreateBrocastThreads(int threadNum);
     static void * BroadcastMessage(void * arg);
 private:
-    int SendBroadcastMessage(int clientfd);
+    int recvMessage(int clientfd);
     struct sockaddr_in serverAddr;
     int listener;
     int epfd;
-    pthread_rwlock_t rwlock_;  //
+    pthread_rwlock_t rwlock_;
     list<int> clients_list;  // 连接列表 Guard by rwlock_
-    BlockingQueue<string> messageQueue; //消息队列
+    BlockingQueue<message_t> messageQueue; //消息队列
 
 };
 
