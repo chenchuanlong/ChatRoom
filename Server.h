@@ -11,13 +11,13 @@
 #include <sys/syscall.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <map>
 
 #include "Common.h"
 #include "BlockingQueue.h"
 
 
 
-using namespace std;
 
 class Server {
 public:
@@ -31,11 +31,12 @@ public:
 private:
     int recvMessage(int clientfd);
     struct sockaddr_in serverAddr;
-    int listener;
+    int listenFd;
     int epfd;
     pthread_rwlock_t rwlock_;
-    list<int> clients_list;  // 连接列表 Guard by rwlock_
-    BlockingQueue<message_t> messageQueue; //消息队列
+    std::map<int, ClientInfo> clients; // 连接列表 Guard by rwlock_
+    std::map<std::string, int> nickname_clientfd; // 昵称到clientfd的映射
+    BlockingQueue<Message_t> messageQueue; //消息队列
 
 };
 

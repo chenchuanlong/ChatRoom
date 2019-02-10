@@ -85,8 +85,9 @@ void Client::Start() {
         close(pipe_fd[0]);
 
         // 输入exit可以退出聊天室
-        cout << "Please input 'exit' to exit the chat room" << endl;
+        //  cout << "Please input 'exit' to exit the chat room" << endl;
 
+        cout<< "Now choose a nickname to start: ";
         // 如果客户端运行正常则不断读取输入发送给服务端
         while (isClientwork){
             bzero(&message, BUF_SIZE);

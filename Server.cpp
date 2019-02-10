@@ -10,7 +10,7 @@ Server::Server() {
     serverAddr.sin_port = htons(SERVER_PORT);
     serverAddr.sin_addr.s_addr = inet_addr(SERVER_IP);
 
-    listener = 0;
+    listenFd = 0;
     epfd = 0;
     pthread_rwlock_init(&rwlock_, NULL);
 }
@@ -22,18 +22,18 @@ Server::~Server() {
 void Server::Init() {
     cout << "Init Server .." << endl;
 
-    listener = socket(PF_INET, SOCK_STREAM, 0);
-    if(listener < 0){
-        perror("listener");
+    listenFd = socket(PF_INET, SOCK_STREAM, 0);
+    if(listenFd < 0){
+        perror("listenFd");
         exit(-1);
     }
 
-    if( bind(listener, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0){
+    if( bind(listenFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0){
         perror("bind error");
         exit(-1);
     }
 
-    int ret = listen(listener, 5);
+    int ret = listen(listenFd, 5);
     if(ret < 0){
         perror("listen error");
         exit(-1);
@@ -46,12 +46,12 @@ void Server::Init() {
         exit(-1);
     }
 
-    addfd(epfd, listener, true);
+    addfd(epfd, listenFd, true);
 
 }
 
 void Server::Close() {
-    close(listener);
+    close(listenFd);
 
     close(epfd);
 }
@@ -62,54 +62,80 @@ int Server::recvMessage(int clientfd) {
     bzero(message, BUF_SIZE);
 
     cout << "read from client(clientID = " << clientfd << ")" << endl;
-    int len = recv(clientfd, buf, BUF_SIZE, 0);
+    int len = static_cast<int>( recv(clientfd, buf, BUF_SIZE, 0) );
 
     //移除连接
     if(len == 0){
         pthread_rwlock_wrlock(&rwlock_);
+        string nickName_ = clients[clientfd].nickName;
         close(clientfd);
-        clients_list.remove(clientfd);
+        clients.erase(clientfd);
         cout << "ClientID = " << clientfd
              << " closed.\n Now there are "
-             << clients_list.size()
+             << clients.size()
              << " client in the chat room"
              << endl;
         pthread_rwlock_unlock(&rwlock_);
 
+        nickname_clientfd.erase(nickName_);
 
-        sprintf(message, CLIENT_LEAVE, clientfd);
+        sprintf(message, CLIENT_LEAVE, nickName_.c_str());
 
-        message_t message_recv;
+        Message_t message_recv;
         message_recv.sender = clientfd;
-        message_recv.receiver = 0;
+        message_recv.receiver = ALL_CLIENTS;
         message_recv.message = message;
         messageQueue.put(message_recv);
 
     }else{
-        if(clients_list.size()==1){
+
+
+
+
+        //判断是不是客户端第一次发送的消息，是的话将其设置为昵称
+        if(!clients[clientfd].isNickNameset){
+
+            pthread_rwlock_wrlock(&rwlock_);
+            clients[clientfd].nickName = buf;
+            clients[clientfd].isNickNameset = true;
+            pthread_rwlock_unlock(&rwlock_);
+
+            nickname_clientfd[buf] = clientfd;
+
+            sprintf(message, SERVER_WELCOME, clients[clientfd].nickName.c_str() );
+            Message_t message_recv(listenFd, ALL_CLIENTS, message);
+            messageQueue.put(message_recv);
+            return  len;
+
+        }
+
+
+        if(clients.size()==1){
             send(clientfd, CAUTION, strlen(CAUTION), 0);
             return len;
         }
 
-        sprintf(message, SERVER_MESSAGE, clientfd, buf);
 
-        message_t message_recv;
-        message_recv.sender = clientfd;
-        message_recv.receiver = 0;
-        message_recv.message = message;
+        //如果是私聊 @nick message
+        string buf_str = buf;
+        string::size_type pos_at = buf_str.find('@');
+        if(pos_at != string::npos){
+            string::size_type pos_space = buf_str.find(' ');
+            assert(pos_space!=string::npos);
+            string receiver_nickName = buf_str.substr(pos_at+1, pos_space-(pos_at+1));
+            string message_ = buf_str.substr(pos_space+1, buf_str.size()-(pos_space+1));
+            cout<<receiver_nickName<<":"<<message_<<endl;
 
-        messageQueue.put(message_recv);
-
-        /*
-        list<int>::iterator it;
-        for(it = clients_list.begin(); it != clients_list.end(); ++it){
-            if(*it != clientfd){
-                if( send(*it, message, BUF_SIZE, 0) < 0){
-                    return  -1;
-                }
-            }
+            sprintf(message, SERVER_MESSAGE, clients[clientfd].nickName.c_str(), message_.c_str());
+            int receiver_fd = nickname_clientfd[receiver_nickName];
+            Message_t message_recv(clientfd, receiver_fd, message);
+            messageQueue.put(message_recv);
+            return  len;
         }
-        */
+
+        sprintf(message, SERVER_MESSAGE, clients[clientfd].nickName.c_str(), buf);
+        Message_t message_recv(clientfd, ALL_CLIENTS, message);
+        messageQueue.put(message_recv);
     }
     return len;
 }
@@ -123,20 +149,18 @@ void * Server::BroadcastMessage(void *arg) {
 
     while(true){
 
-        message_t message_toSend = pServer->messageQueue.take();
+        Message_t message_toSend = pServer->messageQueue.take();
 
         string message = message_toSend.message;
         const char * message_cstr = message.c_str();
-        printf("consumer-tid:%ld is broadcasting:%s\n",(long int) gettid(), message_cstr);
+
+        printf("thread-tid:%ld is broadcasting:%s\n",(long int) gettid(), message_cstr);
 
         pthread_rwlock_rdlock(& (pServer->rwlock_) );
-        list<int>::iterator it;
-        for(it = pServer->clients_list.begin(); it != pServer->clients_list.end(); ++it){
-            if(*it == message_toSend.sender) continue;   //发送者是自己
-
-            if( send(*it, message_cstr, BUF_SIZE, 0) < 0){
-                continue;
-            }
+        for(auto it = pServer->clients.begin(); it != pServer->clients.end(); ++it){
+            if(it->first == message_toSend.sender) continue;   //发送者是自己
+            if(it->first== message_toSend.receiver || message_toSend.receiver==ALL_CLIENTS)
+                send(it->first, message_cstr, BUF_SIZE, 0);
         }
         pthread_rwlock_unlock(& (pServer->rwlock_) );
 
@@ -148,11 +172,6 @@ void Server::CreateBrocastThreads(int threadNum){
     for(int i=0; i<threadNum; ++i){
         pthread_create(&pthreads[i], NULL, BroadcastMessage, (void *)this);
     }
-/*
-    for (int i = 0; i < threadNum; ++i) {
-        pthread_join(pthreads[i], NULL);
-    }
-*/
 }
 
 
@@ -179,33 +198,25 @@ void Server::Start() {
 
             int sockfd = events[i].data.fd;
 
-            if(sockfd == listener){
+            if(sockfd == listenFd){
                 struct sockaddr_in client_address;
                 socklen_t client_addrLength = sizeof(struct sockaddr_in);
-                int clientfd = accept(listener, (struct sockaddr *)&client_address, &client_addrLength);
+                int clientfd = accept(listenFd, (struct sockaddr *)&client_address, &client_addrLength);
 
                 cout << "client connection from: "
                      << inet_ntoa(client_address.sin_addr) << ":"
                      << ntohs(client_address.sin_port) << ", clientfd = "
                      << clientfd << endl;
-
-                pthread_rwlock_wrlock(&rwlock_);
+                
                 addfd(epfd, clientfd, true);
-                clients_list.push_back(clientfd);
-                cout << "Add new clientfd =  " << clientfd << " to poll" << endl;
-                cout << "There are " << clients_list.size() << " clients in the chat room" << endl;
-                pthread_rwlock_unlock(&rwlock_);
 
-                cout << "welcome message" << endl;
-                char message[BUF_SIZE];
-                bzero(message, BUF_SIZE);
-                sprintf(message, SERVER_WELCOME, clientfd);
-                int ret = send(clientfd, message, BUF_SIZE, 0);
-                if(ret < 0){
-                    perror("send error!");
-                    Close();
-                    exit(-1);
-                }
+                ClientInfo clientInfo;
+                clientInfo.sockFd = clientfd;
+                pthread_rwlock_wrlock(&rwlock_);
+                clients[clientfd] = clientInfo;
+                cout << "Add new clientfd =  " << clientfd << " to poll" << endl;
+                cout << "There are " << clients.size() << " clients in the chat room" << endl;
+                pthread_rwlock_unlock(&rwlock_);
             }
             else{
                 int ret = recvMessage(sockfd);
